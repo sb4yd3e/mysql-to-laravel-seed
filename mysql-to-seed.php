@@ -1,12 +1,13 @@
 #!/usr/bin/php
 <?php
 mb_internal_encoding("UTF-8");
-$shortopts  = "h:u:p:d:s:";
+$shortopts  = "h:u:p:d:s:t";
 $opts = getopt($shortopts);
 if (!isset($opts['h']) || !isset($opts['u']) || !isset($opts['p']) ||
 	!isset($opts['d']) || !isset($opts['s'])){
 	die("Parameter missing\nUsage: ./database-to-seed -h hostname -u username -p password -d database -s schema\n");
 }
+
 $conn =  mysql_connect($opts['h'],$opts['u'],$opts['p']) or die("[ERROR] Unable to connect to database\n" . mysql_error());
 mysql_select_db($opts['d'],$conn);
 $schema = include($opts['s']);
@@ -23,7 +24,8 @@ foreach ($schema as $tableName => $columns){
 		$filePath = "seed/".snake_to_camel($tableName)."TableSeeder.php";
 		$file = fopen($filePath, "w");
 		$firstRow = ignore_timestamps(mysql_fetch_assoc($result));
-		fwrite($file,get_head($tableName));
+		$truncate = isset($opts['t']) ? true : false;
+		fwrite($file,get_head($tableName, $truncate));
 		if($firstRow){
 			print_comparison(array_keys($firstRow),$columns);
 			mysql_data_seek($result, 0);
@@ -71,17 +73,19 @@ function ignore_timestamps($row){
 function snake_to_camel($val) {  
 	return str_replace(' ', '', ucwords(str_replace('_', ' ', $val)));  
 }  
-function get_head($tableName){
+function get_head($tableName, $truncate){
 	$result ="<?php\n\nuse Illuminate\Database\Seeder;\nuse Illuminate\Support\Facades\DB;";
 	$result .= "\n\nclass ".snake_to_camel($tableName)."TableSeeder extends Seeder {\n\n";
 	$result .="    public function run() {\n\n";
-	// $result .="        DB::table('".$tableName."')->truncate();\n";
 	$result .="        DB::disableQueryLog();\n\n";
+	if ($truncate) {
+		$result .="        DB::table('".$tableName."')->truncate();\n\n";
+	}
 	$result .="        DB::table('".$tableName."')->insert([\n";
 	return $result;
 }
 function get_tail(){
-  	$result = "    ]);\n  }\n}";
+  	$result = "        ]);\n    }\n}";
 	return $result;
 }
 function format_row($row){
