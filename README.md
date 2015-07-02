@@ -22,15 +22,15 @@ password -> Password for the MySQL source database.<br />
 database -> Source database name.<br />
 schema -> Relative path for the schema file.<br />
 
-<<<<<<< HEAD
-Eg. 
+
+Eg.
+
 ```shell
-./mysql-to-seed -h localhost -u someUser -p somePassword -d someDatabase -s ./schema.php```
+./mysql-to-seed -h localhost -u someUser -p somePassword -d someDatabase -s ./schema.php
+```
 
 Or with the -t option to add DB::table('table_name')->truncate();
 
 ```shell
-./mysql-to-seed -h localhost -u someUser -p somePassword -d someDatabase -s ./schema.php -t```
-=======
-Eg. ./mysql-to-seed -h localhost -u someUser -p somePassword -d someDatabase -s ./schema.php
->>>>>>> 25f8716c3e0f54ce75105a0a994e7a79758ebd8a
+./mysql-to-seed -h localhost -u someUser -p somePassword -d someDatabase -s ./schema.php -t
+```
