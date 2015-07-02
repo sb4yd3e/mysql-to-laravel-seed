@@ -1,12 +1,12 @@
 <?php 
 return [
-	'table1' => [
-		'id',
-		'name',
-		'timestamps'
-	],
-	'table2' => [
-		'id',
-	],
+    'ibge_estados' => [
+        'cod_uf',
+        'uf',
+        'nome_uf',
+    ],
+	// 'table2' => [
+	// 	'id',
+	// ],
 ]
 ?>

@@ -94,7 +94,7 @@ function format_row($row){
 		if ($key == 'timestamps'){
 			$result .= "'created_at' => new DateTime, 'updated_at' => new DateTime,";
 		} else {
-			$result .= "\"".$key."\" => \"".utf8_encode($value)."\",";
+			$result .= "\"".$key."\" => \"".utf8_encode($value)."\", ";
 		}
 	}
 	$result = mb_substr($result, 0, -1);
