@@ -72,8 +72,12 @@ function snake_to_camel($val) {
 	return str_replace(' ', '', ucwords(str_replace('_', ' ', $val)));  
 }  
 function get_head($tableName){
-	$result = "<?php\n\nclass ".snake_to_camel($tableName)."TableSeeder extends Seeder {\n";
-	$result .="  public function run() {\n    DB::table('".$tableName."')->insert([\n";
+	$result ="<?php\n\nuse Illuminate\Database\Seeder;\nuse Illuminate\Support\Facades\DB;";
+	$result .= "\n\nclass ".snake_to_camel($tableName)."TableSeeder extends Seeder {\n\n";
+	$result .="    public function run() {\n\n";
+	// $result .="        DB::table('".$tableName."')->truncate();\n";
+	$result .="        DB::disableQueryLog();\n\n";
+	$result .="        DB::table('".$tableName."')->insert([\n";
 	return $result;
 }
 function get_tail(){
@@ -81,12 +85,12 @@ function get_tail(){
 	return $result;
 }
 function format_row($row){
-	$result = "      [";
+	$result = "            [";
 	foreach($row as $key => $value){
 		if ($key == 'timestamps'){
 			$result .= "'created_at' => new DateTime, 'updated_at' => new DateTime,";
 		} else {
-			$result .= "'".$key."' => '".utf8_encode($value)."',";
+			$result .= "\"".$key."\" => \"".utf8_encode($value)."\",";
 		}
 	}
 	$result = mb_substr($result, 0, -1);
